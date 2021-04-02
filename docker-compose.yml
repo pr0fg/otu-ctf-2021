@@ -1,0 +1,234 @@
+version: '2'
+
+services:
+
+  web_bypass_open_index:
+    container_name: CTF_Web_BypassOpenIndex
+    image: httpd:2.4
+    restart: always
+    volumes:
+    - ./bypass_open_index:/usr/local/apache2/htdocs:ro
+    ports:
+     - "5001:80"
+
+  web_bypass_parameter:
+    container_name: CTF_Web_BypassParameter
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./bypass_parameter:/var/www/html:ro
+    ports:
+     - "5002:80"
+
+  web_bypass_host_header:
+    container_name: CTF_Web_BypassHostHeader
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./bypass_host_header:/var/www/html:ro
+    ports:
+     - "5003:80"
+
+  web_bypass_login:
+    container_name: CTF_Web_BypassLogin
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./bypass_login/index.php:/var/www/html/index.php:ro
+    - ./bypass_login/flag.txt:/var/www/flag.txt:ro
+    ports:
+     - "5004:80"
+
+  web_auth_login_brute:
+    container_name: CTF_Web_AuthLoginBrute
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./auth_login_brute:/var/www/html:ro
+    ports:
+     - "5005:80"
+
+  web_auth_cookie_brute:
+    container_name: CTF_Web_AuthCookieBrute
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./auth_cookie_brute:/var/www/html:ro
+    ports:
+     - "5006:80"
+
+  web_auth_default_pass:
+    container_name: CTF_Web_AuthDefaultPass
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./auth_default_pass:/var/www/html:ro
+    ports:
+     - "5007:80"
+
+  web_acl_api_key:
+    container_name: CTF_Web_ACLAPIKey
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./acl_api_key:/var/www/html:ro
+    ports:
+     - "5008:80"
+
+  web_acl_user_details:
+    container_name: CTF_Web_ACLUserDetails
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./acl_user_details:/var/www/html:ro
+    ports:
+     - "5009:80"
+
+  web_acl_read_messages:
+    container_name: CTF_Web_ACLReadMessages
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./acl_read_messages:/var/www/html:ro
+    ports:
+     - "5010:80"
+
+  web_command_exec_easy:
+    container_name: CTF_Web_Command_Exec_Easy
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./command_exec_easy/index.php:/var/www/html/index.php:ro
+    - ./command_exec_easy/flag.txt:/var/www/flag.txt:ro
+    ports:
+     - "5011:80"
+
+  web_command_exec_medium:
+    container_name: CTF_Web_Command_Exec_Medium
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./command_exec_medium/index.php:/var/www/html/index.php:ro
+    - ./command_exec_medium/flag.txt:/var/www/flag.txt:ro
+    ports:
+     - "5012:80"
+
+  web_command_exec_hard:
+    container_name: CTF_Web_Command_Exec_Hard
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./command_exec_hard/index.php:/var/www/html/index.php:ro
+    - ./command_exec_hard/flag.txt:/var/www/flag.txt:ro
+    ports:
+     - "5013:80"
+
+  web_lfi_easy:
+    container_name: CTF_Web_LFI_Easy
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./lfi_easy/uploads:/var/www/html/uploads
+    - ./lfi_easy/index.php:/var/www/html/index.php:ro
+    - ./lfi_easy/flag.txt:/var/www/flag.txt:ro
+    ports:
+     - "5014:80"
+
+  web_lfi_hard:
+    container_name: CTF_Web_LFI_Hard
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./lfi_hard/uploads:/var/www/html/uploads
+    - ./lfi_hard/index.php:/var/www/html/index.php:ro
+    - ./lfi_hard/flag.txt:/var/www/flag.txt:ro
+    ports:
+     - "5015:80"
+
+  web_sqli_easy_web:
+    container_name: CTF_Web_SQLi_Easy_Web
+    image: romeoz/docker-apache-php
+    restart: always
+    volumes:
+    - ./sqli/easy/index.php:/var/www/app/index.php:ro
+    ports:
+     - "5016:80"
+    depends_on:
+     - web_sqli_easy_db
+
+  web_sqli_easy_db:
+    container_name: CTF_Web_SQLi_Easy_DB
+    image: mariadb:latest
+    volumes:
+      - ./sqli/config/dump-easy.sql:/docker-entrypoint-initdb.d/dump.sql:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+
+  web_sqli_medium_web:
+    container_name: CTF_Web_SQLi_Medium_Web
+    image: romeoz/docker-apache-php
+    restart: always
+    volumes:
+    - ./sqli/medium/index.php:/var/www/app/index.php:ro
+    ports:
+     - "5017:80"
+    depends_on:
+     - web_sqli_medium_db
+
+  web_sqli_medium_db:
+    container_name: CTF_Web_SQLi_Medium_DB
+    image: mariadb:latest
+    volumes:
+      - ./sqli/config/dump-medium.sql:/docker-entrypoint-initdb.d/dump.sql:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+
+  web_sqli_hard_web:
+    container_name: CTF_Web_SQLi_Hard_Web
+    image: romeoz/docker-apache-php
+    restart: always
+    volumes:
+    - ./sqli/hard/index.php:/var/www/app/index.php:ro
+    ports:
+     - "5018:80"
+    depends_on:
+     - web_sqli_hard_db
+
+  web_sqli_hard_db:
+    container_name: CTF_Web_SQLi_Hard_DB
+    image: mariadb:latest
+    volumes:
+      - ./sqli/config/dump-hard.sql:/docker-entrypoint-initdb.d/dump.sql:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+
+  web_xxe_easy:
+    container_name: CTF_Web_XXE_Easy
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./xxe_easy/index.php:/var/www/html/index.php:ro
+    - ./xxe_easy/backend.php:/var/www/html/backend.php:ro
+    - ./xxe_easy/flag.txt:/flag.txt:ro
+    ports:
+     - "5019:80"
+
+  web_xxe_medium:
+    container_name: CTF_Web_XXE_Medium
+    image: php:7-apache
+    restart: always
+    volumes:
+    - ./xxe_medium/index.php:/var/www/html/index.php:ro
+    - ./xxe_medium/backend.php:/var/www/html/backend.php:ro
+    - ./xxe_medium/flag.txt:/flag.txt:ro
+    ports:
+     - "5020:80"
